@@ -122,6 +122,20 @@ export default function AnimeEdit() {
     }
   };
 
+  if (!role && !token) {
+    return (
+      <>
+        <Navbar />
+        <Box sx={{ py: 10, textAlign: "center" }}>
+          <Typography variant="h5">You need to login first</Typography>
+          <Typography component={Link} to="/login">
+            Go Login
+          </Typography>
+        </Box>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />

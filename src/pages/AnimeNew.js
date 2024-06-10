@@ -13,13 +13,14 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Box,
 } from "@mui/material";
 import Navbar from "../components/Navbar";
 import { getGenres } from "../utils/api_genres";
 import { useState } from "react";
 import { FileUpload } from "@mui/icons-material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import { addAnime } from "../utils/api_animes";
@@ -110,6 +111,20 @@ export default function AnimeNew() {
       });
     }
   };
+
+  if (!role && !token) {
+    return (
+      <>
+        <Navbar />
+        <Box sx={{ py: 10, textAlign: "center" }}>
+          <Typography variant="h5">You need to login first</Typography>
+          <Typography component={Link} to="/login">
+            Go Login
+          </Typography>
+        </Box>
+      </>
+    );
+  }
 
   return (
     <>

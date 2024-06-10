@@ -6,10 +6,11 @@ import {
   CardMedia,
   Paper,
   CircularProgress,
+  Typography,
 } from "@mui/material";
 import Navbar from "../components/Navbar";
 import { ArrowBackIosNew } from "@mui/icons-material";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { url } from "../utils/url";
 import { getEpisode } from "../utils/api_episodes";
 import { useQuery } from "@tanstack/react-query";
@@ -21,12 +22,26 @@ export default function WatchingPage() {
 
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser = {} } = cookies;
-  const { token } = currentUser;
+  const { token, role } = currentUser;
 
   const { data: episode = {}, isLoading } = useQuery({
     queryKey: ["episode"],
     queryFn: () => getEpisode({ id, token }),
   });
+
+  if (!role && !token) {
+    return (
+      <>
+        <Navbar />
+        <Box sx={{ py: 10, textAlign: "center" }}>
+          <Typography variant="h5">You need to login first</Typography>
+          <Typography component={Link} to="/login">
+            Go Login
+          </Typography>
+        </Box>
+      </>
+    );
+  }
 
   if (isLoading)
     return (
@@ -54,7 +69,7 @@ export default function WatchingPage() {
           sx={{
             display: "flex",
             justifyContent: "center",
-            mx:"auto",
+            mx: "auto",
             bgcolor: "black",
             width: "90%",
             height: "auto",

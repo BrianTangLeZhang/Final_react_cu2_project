@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -12,14 +12,34 @@ import Navbar from "../components/Navbar";
 import { getUser } from "../utils/api_users";
 import { useQuery } from "@tanstack/react-query";
 import { url } from "../utils/url";
+import { useCookies } from "react-cookie";
 
 export default function UserProfile() {
   const { id } = useParams();
+
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser = {} } = cookies;
+  const { token,role } = currentUser;
+
 
   const { data: user = {} } = useQuery({
     queryKey: ["user"],
     queryFn: () => getUser(id),
   });
+
+  if (!role && !token) {
+    return (
+      <>
+        <Navbar />
+        <Box sx={{ py: 10, textAlign: "center" }}>
+          <Typography variant="h5">You need to login first</Typography>
+          <Typography component={Link} to="/login">
+            Go Login
+          </Typography>
+        </Box>
+      </>
+    );
+  }
 
   return (
     <>
