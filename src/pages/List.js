@@ -1,19 +1,34 @@
 import { useCookies } from "react-cookie";
 import Navbar from "../components/Navbar";
-import { CircularProgress, Container, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { getUserList } from "../utils/api_lists";
 import AnimeCard from "../components/AnimeCard";
+import { Link } from "react-router-dom";
 
 export default function UserFavouriteList() {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser = {} } = cookies;
-  const { token } = currentUser;
+  const { token,role } = currentUser;
 
   const { data: list = [], isLoading } = useQuery({
     queryKey: ["list"],
     queryFn: () => getUserList(token),
   });
+
+  if (!role) {
+    return (
+      <>
+        <Navbar />
+        <Box sx={{ py: 10, textAlign: "center" }}>
+          <Typography variant="h5">You need to login first</Typography>
+          <Typography component={Link} to="/login">
+            Go Login
+          </Typography>
+        </Box>
+      </>
+    );
+  }
 
   if (isLoading)
     return (
